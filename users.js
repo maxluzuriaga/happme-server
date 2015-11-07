@@ -36,15 +36,15 @@ exports.get_contact_email = function(uid, callback) {
 };
 
 exports.get_last_prompt = function(uid, callback) {
-  db.connection.query("select 'last_prompt' from users where 'username' = ?", [uid], function(error, results, fields)){
+  db.connection.query("select 'last_prompt' from users where 'username' = ?", [uid], function(error, results, fields){
     if(error != null){
       callback(false);
       return;
     }
 
     callback(results[0].last_prompt);
-  }
-}
+  });
+};
 
 exports.make_prompt_time_now = function(uid, callback) {
   db.connection.query("update `users` set `last_prompt` = NOW() where `uid` = ?", [uid], function(error, results, fields) {
