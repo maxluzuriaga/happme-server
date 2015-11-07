@@ -35,6 +35,22 @@ exports.get_contact_email = function(uid, callback) {
   });
 };
 
+exports.did_ask_long_enough_ago = function(uid, callback) {
+  db.connection.query("select `last_prompt` from users where `username` = ?", [uid], function(error, results, fields) {
+    if (error != null) {
+      callback(false);
+      return;
+    }
+
+    var last_date = results[0].last_prompt;
+
+    var d = new Date();
+    d.setDate(d.getDate() - 7);
+
+    callback(last_date <= d);
+  });
+};
+
 exports.make_prompt_time_now = function(uid, callback) {
   db.connection.query("update `users` set `last_prompt` = NOW() where `uid` = ?", [uid], function(error, results, fields) {
     callback(error == null);
