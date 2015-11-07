@@ -18,7 +18,8 @@
   "dependencies": {
     "jade": "*",
     "express": "~3.1.0",
-    "mysql": "*"
+    "mysql": "*",
+    "nodemailer": "~0.7.1"
   },
   "noAnalyze": true,
   "license": "Apache",
