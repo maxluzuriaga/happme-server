@@ -51,7 +51,7 @@ exports.did_ask_long_enough_ago = function(uid, callback) {
 };
 
 exports.make_prompt_time_now = function(uid, callback) {
-  db.connection.query("update `users` set `last_prompt` = NOW() where `uid` = ?", [uid], function(error, results, fields) {
+  db.connection.query("update `users` set `last_prompt` = NOW() where `username` = ?", [uid], function(error, results, fields) {
     callback(error == null);
   });
 };
