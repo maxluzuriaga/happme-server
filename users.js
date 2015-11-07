@@ -3,8 +3,6 @@ var db = require('./db');
 // Callback returns with value true if user existed or was created, or false if there was an error
 exports.get_or_create_user = function(uid, callback) {
   db.connection.query("select * from users where `username` = ?", [uid], function(error, results, fields) {
-    console.log(results);
-
     if (error != null) {
       callback(false);
       return;
@@ -46,6 +44,12 @@ exports.get_last_prompt = function(uid, callback) {
 
     callback(results[0].last_prompt);
   }
+}
+
+exports.make_prompt_time_now = function(uid, callback) {
+  db.connection.query("update `users` set `last_prompt` = NOW() where `uid` = ?", [uid], function(error, results, fields) {
+    callback(error == null);
+  });
 };
 
 exports.get_weeks_score = function(uid, callback) {
@@ -58,7 +62,12 @@ exports.get_weeks_score = function(uid, callback) {
       return;
     }
 
-    // get the result and return it to callback
+    var result = results[0]['sum(tally)'];
+    if (result == null) {
+      result = 0.0;
+    }
+
+    callback(result);
   });
 };
 
