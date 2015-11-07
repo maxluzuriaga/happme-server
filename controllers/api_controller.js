@@ -13,3 +13,15 @@ exports.record_story = function(req, res) {
   res.send("go away");
 };
 
+exports.change_contact_email = function(req, res) {
+  var uid = req.body.uid;
+  var contact_email = req.body.uid;
+
+  users.get_or_create_user(uid, function(worked) {
+    if (worked) {
+      users.update_contact(uid, contact_email, function(worked) {
+        
+      });
+    }
+  });
+};
