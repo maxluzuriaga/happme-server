@@ -6,9 +6,9 @@ exports.record_story = function(req, res) {
   // contact
   var uid = req.params.uid;
 
-  users.get_or_create_user(uid, function(worked) {
-    console.log(worked);
-  });
+  // users.get_or_create_user(uid, function(worked) {
+    // console.log(worked);
+  // });
 
   res.send("go away");
 };
