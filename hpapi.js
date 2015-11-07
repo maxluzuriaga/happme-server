@@ -1,7 +1,7 @@
 // TODO
 
 module.exports = {
-  get_sentiment: function (text, successCallback, errorCallback){
+  get_sentiment: function (text, callback){
     var host        = 'http://api.havenondemand.com';
     var path        = '/1/api/sync/analyzesentiment/v1?';
     var query_text  = querystring.stringify({
@@ -17,10 +17,10 @@ module.exports = {
 
       res.on('end', function(){
         body = JSON.parse(body);
-        successCallback(body);
+        callback(body);
       })
     }).on('error', function(e){
-      errorCallback(e);
+      callback(false);
     });
   }
 }
