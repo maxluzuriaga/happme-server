@@ -19,7 +19,7 @@ exports.get_or_create_user = function(uid, callback) {
 };
 
 exports.update_contact = function(uid, email, callback) {
-  db.connection.query("update users where `username` = ? set `contact_email` = ?", [uid, email], function(error, results, fields) {
+  db.connection.query("update users set `contact_email` = ? where `username` = ? ", [email, uid], function(error, results, fields) {
     callback(error == null);
   });
 };
@@ -47,7 +47,7 @@ exports.did_ask_long_enough_ago = function(uid, callback) {
     var d = new Date();
     d.setDate(d.getDate() - 7);
 
-    callback(last_date <= d);
+    callback(last_date == null || last_date <= d);
   });
 };
 
