@@ -60,7 +60,16 @@ exports.record_story = function(req, res) {
                 // get last time prompted
                 users.get_last_prompt(uid, function(last_prompt){
                   if(last_prompt != false){
-                    // TODO if less than a week ago, update last_prompt and return negative and prompt
+                    users.did_ask_long_enough_ago(uid, function(should_prompt){
+                      if(should_prompt == true){
+                        users.make_prompt_time_now(uid, function(arg){ return; });
+                        res.send("negative and prompt");
+                        return;
+                      }else if(should_prompt == false){
+                        res.send("negative");
+                        return;
+                      }
+                    });
                   }
                 })
               }
@@ -70,8 +79,6 @@ exports.record_story = function(req, res) {
       }
     });
   });
-
-  res.send("go away");
 };
 
 exports.change_contact = function(req, res) {
