@@ -14,7 +14,7 @@ exports.record_story = function(req, res) {
 
   users.get_or_create_user(uid, function(success){
     if(success == false){
-      res.send("error" + uid);
+      res.send(JSON.stringify(req.body.toString));
       return;
     }
 
@@ -109,7 +109,7 @@ exports.record_story = function(req, res) {
                 return;
               }else{
                 if(score > -.5){
-                  res.send({"remove": false, "prompt" : false});
+                  res.send(200, {"remove": false, "prompt" : false});
                   return;
                 }
                 console.log("SCORE: " + score);
