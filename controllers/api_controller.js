@@ -31,6 +31,7 @@ exports.record_story = function(req, res) {
       concatenated_text += ". " + content[key];
     }
 
+
     // Trigger stuff
     if (req.body.triggers) {
       var text_tokens = triggers.split_sanitize(concatenated_text);
