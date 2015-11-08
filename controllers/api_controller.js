@@ -50,7 +50,7 @@ exports.record_story = function(req, res) {
           // }
 
           if (value >= 0.4) { // TODO: look to see if this cutoff makes sense
-            res.send({"remove": true, "prompt" : true});
+            res.send(200, {"remove": true, "prompt" : true});
             res.end();
             console.log("ENDING FROM TRIGGER STUFF")
             return true;
@@ -94,12 +94,12 @@ exports.record_story = function(req, res) {
             if(aggregate > 0){
 
               // we got a non-negative result
-              res.send({"remove": false, "prompt" : false});
+              res.send(200, {"remove": false, "prompt" : false});
               return;
             }
 
             if(filtering == true){
-              res.send({"remove": true, "prompt" : false});
+              res.send(200, {"remove": true, "prompt" : false});
               return;
             }
 
@@ -118,7 +118,7 @@ exports.record_story = function(req, res) {
                 users.did_ask_long_enough_ago(uid, function(should_prompt){
                   if(should_prompt == true){
                     users.make_prompt_time_now(uid, function(arg){ return; });
-                    res.send({"remove": true, "prompt" : true});
+                    res.send(200, {"remove": true, "prompt" : true});
 
                     users.get_contact_email(uid, function(email){
                       if(email == false){
@@ -132,7 +132,7 @@ exports.record_story = function(req, res) {
                     });
                     return;
                   }else if(should_prompt == false){
-                    res.send({"remove": true, "prompt" : false});
+                    res.send(200, {"remove": true, "prompt" : false});
                     return;
                   }
                 })
