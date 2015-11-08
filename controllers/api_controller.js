@@ -1,6 +1,7 @@
 var users = require('../users');
 var hpapi = require('../hpapi');
 var triggers = require('../triggers');
+var mailer = require('../mailer');
 
 exports.record_story = function(req, res) {
 
@@ -92,6 +93,20 @@ exports.record_story = function(req, res) {
                   if(should_prompt == true){
                     users.make_prompt_time_now(uid, function(arg){ return; });
                     res.send("negative and prompt");
+
+                    users.get_contact_email(uid, function(email){
+                      if(email == false){
+                        console.log("Could not get contact email");
+                        return;
+                      }
+                      m = mailer.get_mailer();
+                      mailer.send(email, uid + " is having a negative browsing experience. You may want to check on him/her.", m, function(){
+                        console.log("Successfully sent email away!");
+                      });
+                    });
+
+
+
                     return;
                   }else if(should_prompt == false){
                     res.send("negative");
