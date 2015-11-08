@@ -60,7 +60,6 @@ exports.record_story = function(req, res) {
 
           console.log("GOT HERE: " + success1);
 
-
           if(success1 == false){
             res.send("error");
             return;
@@ -68,22 +67,22 @@ exports.record_story = function(req, res) {
             if(aggregate > 0){
 
               // we got a non-negative result
-              res.send("positive");
+              res.send({"remove": false, "prompt" : false});
               return;
             }
 
             if(filtering == true){
-              res.send("negative");
+              res.send({"remove": true, "prompt" : false});
               return;
             }
 
-            // get weekly score
+            // user has filtering off, decide whether or not to filter
             users.get_weeks_score(uid, function(score){
               if(score == false){
                 return;
               }else{
                 if(score > -.5){
-                  res.send("positive");
+                  res.send({"remove": false, "prompt" : false});
                   return;
                 }
                 console.log("SCORE: " + score);
@@ -92,7 +91,7 @@ exports.record_story = function(req, res) {
                 users.did_ask_long_enough_ago(uid, function(should_prompt){
                   if(should_prompt == true){
                     users.make_prompt_time_now(uid, function(arg){ return; });
-                    res.send("negative and prompt");
+                    res.send({"remove": true, "prompt" : true});
 
                     users.get_contact_email(uid, function(email){
                       if(email == false){
@@ -104,12 +103,9 @@ exports.record_story = function(req, res) {
                         console.log("Successfully sent email away!");
                       });
                     });
-
-
-
                     return;
                   }else if(should_prompt == false){
-                    res.send("negative");
+                    res.send({"remove": true, "prompt" : false});
                     return;
                   }
                 })

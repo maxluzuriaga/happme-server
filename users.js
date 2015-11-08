@@ -44,7 +44,7 @@ exports.did_ask_long_enough_ago = function(uid, callback) {
     var last_date = results[0].last_prompt;
 
     var d = new Date();
-    d.setDate(d.getDate() - 7);
+    d.setMinutes(d.getMinutes() - 1);
 
     callback(last_date == null || last_date <= d);
   });
