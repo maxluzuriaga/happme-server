@@ -1,8 +1,11 @@
 var associated_words = {
-  'rape': ['rape', 'rapist', 'raping', 'molest', 'molestation', 'molester', 'sexual', 'assault'],
-  'child abuse': ['molest', 'pedophile', 'pedophilia'],
+  'sexualAssault': ['rape', 'rapist', 'raping', 'molest', 'molestation', 'molester', 'sexual', 'assault'],
+  'childAbuse': ['molest', 'pedophile', 'pedophilia'],
   'self-harm': ['self-harm', 'suicide', 'anorexia', 'anorexic', 'bulimia', 'bulimic'],
-  'ptsd': ['war', 'warfare', 'battle', 'guns', 'gun', 'gunfire', 'gunman', 'murder', 'bullet', 'bullets', 'rifle', 'fighting', 'destruction', 'explosion']
+  'ptsd': ['war', 'warfare', 'battle', 'guns', 'gun', 'gunfire', 'gunman', 'murder', 'bullet', 'bullets', 'rifle', 'fighting', 'destruction', 'explosion'],
+
+  'profanity': ['fuck', 'shit', 'cunt', 'dick', 'asshole', 'damn', 'bitch', 'cock', 'fag', 'slut'],
+  'drugUse': ['weed', 'pot', 'marijuana', 'dope', 'coke', 'heroin', 'crack', 'opium', 'smack', 'meth', 'ketamine']
 };
 
 exports.split_sanitize = function(text) {
@@ -25,9 +28,9 @@ exports.weight_trigger = function(theme, text_tokens) {
 };
 
 exports.weight_with_api = function(theme, api_results, original_text) {
-  if (theme == "drug-use") {
-    theme = "drugs_eng";
-  }
+  // if (theme == "drug-use") {
+  //   theme = "drugs_eng";
+  // }
 
   var entities = api_results.entities;
   var total = 0;
