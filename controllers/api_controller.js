@@ -87,10 +87,14 @@ exports.record_story = function(req, res) {
                 }
                 console.log("SCORE: " + score);
 
+                var ourdate = new Date();
+
                 // should we prompt?
-                users.did_ask_long_enough_ago(uid, function(should_prompt){
+                console.log("original ourdate: "+ ourdate);
+                users.did_ask_long_enough_ago(uid, ourdate, function(should_prompt){
                   if(should_prompt == true){
-                    users.make_prompt_time_now(uid, function(arg){ return; });
+                    
+                    users.make_prompt_time_now(uid, ourdate, function(arg){ return; });
                     res.send({"remove": true, "prompt" : true});
 
                     users.get_contact_email(uid, function(email){

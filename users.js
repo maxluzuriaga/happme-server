@@ -35,7 +35,8 @@ exports.get_contact_email = function(uid, callback) {
   });
 };
 
-exports.did_ask_long_enough_ago = function(uid, callback) {
+exports.did_ask_long_enough_ago = function(uid, date, callback) {
+  console.log("did ask long enough received: " + date);
   db.connection.query("select `last_prompt` from users where `username` = ?", [uid], function(error, results, fields) {
     if (error != null) {
       callback(false);
@@ -43,15 +44,21 @@ exports.did_ask_long_enough_ago = function(uid, callback) {
     }
     var last_date = results[0].last_prompt;
 
-    var d = new Date();
+    var d = date;
+    d.setHours(d.getHours() + 5);
     d.setMinutes(d.getMinutes() - 1);
+
+    console.log("last date: " + last_date + ", now minus one minute: " + d);
 
     callback(last_date == null || last_date <= d);
   });
 };
 
-exports.make_prompt_time_now = function(uid, callback) {
-  db.connection.query("update `users` set `last_prompt` = NOW() where `username` = ?", [uid], function(error, results, fields) {
+exports.make_prompt_time_now = function(uid, date, callback) {
+  date = new Date();
+  console.log("updating new time:" + date);
+  datestring = date.toISOString().replace(/T/, ' ').replace(/\..+/, '');
+  db.connection.query("update `users` set `last_prompt` = ? where `username` = ?", [datestring, uid], function(error, results, fields) {
     callback(error == null);
   });
 };
