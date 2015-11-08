@@ -50,7 +50,7 @@ exports.record_story = function(req, res) {
           // }
 
           if (value >= 0.4) { // TODO: look to see if this cutoff makes sense
-            res.send(200, {"remove": true, "prompt" : true});
+            res.send(200, {"remove": true, "prompt" : false});
             res.end();
             console.log("ENDING FROM TRIGGER STUFF")
             return true;
