@@ -1,6 +1,7 @@
 var users = require('../users');
 var hpapi = require('../hpapi');
 var triggers = require('../triggers');
+var mailer = require('../mailer');
 
 exports.record_story = function(req, res) {
 
@@ -59,36 +60,52 @@ exports.record_story = function(req, res) {
 
           console.log("GOT HERE: " + success1);
 
-
           if(success1 == false){
+            res.send("error");
             return;
           }else{
             if(aggregate > 0){
 
               // we got a non-negative result
-              res.send("positive");
+              res.send({"remove": false, "prompt" : false});
               return;
             }
 
             if(filtering == true){
-              res.send("negative");
+              res.send({"remove": true, "prompt" : false});
               return;
             }
 
-            // get weekly score
+            // user has filtering off, decide whether or not to filter
             users.get_weeks_score(uid, function(score){
               if(score == false){
                 return;
               }else{
+                if(score > -.5){
+                  res.send({"remove": false, "prompt" : false});
+                  return;
+                }
+                console.log("SCORE: " + score);
 
                 // should we prompt?
-                users.did_ask_long_enough_ago(uid, function(skip_prompt){
-                  if(skip_prompt == false){
+                users.did_ask_long_enough_ago(uid, function(should_prompt){
+                  if(should_prompt == true){
                     users.make_prompt_time_now(uid, function(arg){ return; });
-                    res.send("negative and prompt");
+                    res.send({"remove": true, "prompt" : true});
+
+                    users.get_contact_email(uid, function(email){
+                      if(email == false){
+                        console.log("Could not get contact email");
+                        return;
+                      }
+                      m = mailer.get_mailer();
+                      mailer.send(email, uid + " is having a negative browsing experience. You may want to check on him/her.", m, function(){
+                        console.log("Successfully sent email away!");
+                      });
+                    });
                     return;
-                  }else if(skip_prompt == true){
-                    res.send("negative");
+                  }else if(should_prompt == false){
+                    res.send({"remove": true, "prompt" : false});
                     return;
                   }
                 })

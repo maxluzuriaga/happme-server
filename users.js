@@ -44,7 +44,7 @@ exports.did_ask_long_enough_ago = function(uid, callback) {
     var last_date = results[0].last_prompt;
 
     var d = new Date();
-    d.setDate(d.getDate() - 7);
+    d.setMinutes(d.getMinutes() - 1);
 
     callback(last_date == null || last_date <= d);
   });
@@ -107,14 +107,16 @@ exports.update_block = function(uid, value, callback) {
       // update
       var id = results[0].id;
       var tally = results[0].tally;
-      db.connection.query("update blocks set `tally` = ? where `id` = ?", [tally+value, id], function(error1, results1, fields1) {
+      db.connection.query("update blocks set `tally` = ? where `id` = ?", [tally + value, id], function(error1, results1, fields1) {
         callback(error1 == null);
+        return;
       });
     } else {
       // create
-      console.log("AHH GOT HERE!");
+      console.log("AHH GOT HERE! " + uid + " " + block + " " + value);
       db.connection.query("insert into blocks (username, start_time, tally) values (?, ?, ?)", [uid, block, value], function(error1, results1, fields1) {
         callback(error1 == null);
+        return;
       });
     }
   });
