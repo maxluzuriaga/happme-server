@@ -93,9 +93,11 @@ exports._current_time_block = function () {
 }
 
 exports.update_block = function(uid, value, callback) {
-  var block = _current_time_block();
+  var block = exports._current_time_block().toISOString().replace(/T/, ' ').replace(/\..+/, '');
 
-  db.connection.query("select id from blocks where `username` = ? and `start_time` = ?", [uid, block], function(error, results, fields) {
+  console.log(uid + " " + value);
+
+  db.connection.query("select id, tally from blocks where `username` = ? and `start_time` = ?", [uid, block], function(error, results, fields) {
     if (error != null) {
       callback(false);
       return;
@@ -105,12 +107,13 @@ exports.update_block = function(uid, value, callback) {
       // update
       var id = results[0].id;
       var tally = results[0].tally;
-      db.connection.query("update blocks where `id` = ? set `tally` = ?", [id, tally+value], function(error1, results1, fields1) {
+      db.connection.query("update blocks set `tally` = ? where `id` = ?", [tally+value, id], function(error1, results1, fields1) {
         callback(error1 == null);
       });
     } else {
       // create
-      db.connection.query("insert into blocks set `username` = ? and `start_time` = ? and `tally` = ?", [uid, block, value], function(error1, results1, fields1) {
+      console.log("AHH GOT HERE!");
+      db.connection.query("insert into blocks (username, start_time, tally) values (?, ?, ?)", [uid, block, value], function(error1, results1, fields1) {
         callback(error1 == null);
       });
     }
