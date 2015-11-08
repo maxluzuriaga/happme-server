@@ -35,6 +35,7 @@ exports.record_story = function(req, res) {
     if (req.body.triggers) {
       var text_tokens = triggers.split_sanitize(concatenated_text);
       var user_triggers = req.body.triggers.split(',');
+      user_triggers.pop(-1);
 
       var hp_response;
 
