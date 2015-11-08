@@ -61,6 +61,7 @@ exports.record_story = function(req, res) {
 
 
           if(success1 == false){
+            res.send("error");
             return;
           }else{
             if(aggregate > 0){
@@ -80,6 +81,11 @@ exports.record_story = function(req, res) {
               if(score == false){
                 return;
               }else{
+                if(score > -.5){
+                  res.send("positive");
+                  return;
+                }
+                console.log("SCORE: " + score);
 
                 // should we prompt?
                 users.did_ask_long_enough_ago(uid, function(should_prompt){

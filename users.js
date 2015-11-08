@@ -107,14 +107,16 @@ exports.update_block = function(uid, value, callback) {
       // update
       var id = results[0].id;
       var tally = results[0].tally;
-      db.connection.query("update blocks set `tally` = ? where `id` = ?", [tally+value, id], function(error1, results1, fields1) {
+      db.connection.query("update blocks set `tally` = ? where `id` = ?", [tally + value, id], function(error1, results1, fields1) {
         callback(error1 == null);
+        return;
       });
     } else {
       // create
-      console.log("AHH GOT HERE!");
+      console.log("AHH GOT HERE! " + uid + " " + block + " " + value);
       db.connection.query("insert into blocks (username, start_time, tally) values (?, ?, ?)", [uid, block, value], function(error1, results1, fields1) {
         callback(error1 == null);
+        return;
       });
     }
   });
