@@ -132,7 +132,11 @@ exports.record_story = function(req, res) {
                         return;
                       }
                       m = mailer.get_mailer();
-                      mailer.send(email, uid + " is having a negative browsing experience. You may want to check on him/her.", m, function(){
+
+                      var content = uid + " is using Happme, a chrome extension that helps monitor your newsfeed to ensure that it reaches a baseline for happiness. Overly negative news feeds have been shown to negatively impact mood and have strong links to depression."
+                      content += "\n" + uid + "’s newsfeed currently reflects overly negative sentiments. This might be affecting their mood. " + uid + " listed you as a contact for help, it is advised that you check in on them."
+
+                      mailer.send(email, content, m, function(){
                         console.log("Successfully sent email away!");
                       });
                     });
