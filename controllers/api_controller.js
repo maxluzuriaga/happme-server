@@ -98,6 +98,7 @@ exports.record_story = function(req, res) {
               return;
             }
 
+
             if(filtering == true){
               res.send(200, {"remove": true, "prompt" : false});
               return;
