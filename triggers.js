@@ -25,6 +25,10 @@ exports.weight_trigger = function(theme, text_tokens) {
 };
 
 exports.weight_with_api = function(theme, api_results, original_text) {
+  if (theme == "drug-use") {
+    theme = "drugs_eng";
+  }
+
   var entities = api_results.entities;
   var total = 0;
   for (var i=0; i<entities.length; i++) {

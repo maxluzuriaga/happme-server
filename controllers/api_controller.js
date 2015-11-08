@@ -10,6 +10,8 @@ exports.record_story = function(req, res) {
   // contact
   var uid = req.body.uid;
 
+  console.log(req.body);
+
   users.get_or_create_user(uid, function(success){
     if(success == false){
       res.send("error");
@@ -34,13 +36,39 @@ exports.record_story = function(req, res) {
       var text_tokens = triggers.split_sanitize(concatenated_text);
       var user_triggers = req.body.triggers.split(',');
 
-      for (var i=0; i<user_triggers.length; i++) {
-        var trigger = user_triggers[i];
-        if (triggers.weight_trigger(trigger, text_tokens) >= 0.4) { // TODO: look to see if this cutoff makes sense
-          res.send({"remove": true, "prompt" : true});
+      var hp_response;
+
+      function do_trigger_stuff() {
+        for (var i=0; i<user_triggers.length; i++) {
+          var trigger = user_triggers[i];
+
+          var value;
+          // if (trigger == 'profanity' || trigger == 'drug-use') {
+            // value = triggers.weight_with_api(trigger, hp_response, concatenated_text)
+          // } else {
+            value = triggers.weight_trigger(trigger, text_tokens)
+          // }
+
+          if (value >= 0.4) { // TODO: look to see if this cutoff makes sense
+            res.send({"remove": true, "prompt" : true});
+            res.end();
+            console.log("ENDING FROM TRIGGER STUFF")
+            return true;
+          }
+        }
+        return false;
+      }
+      // if (user_triggers.indexOf('profanity') >= 0 || user_triggers.indexOf('drug-use') >= 0) {
+      //   hpapi.get_entities(concatenated_text, function(r) {
+      //     hp_response = r;
+      //     console.log("NOW STARTING TRIGGER STUFF");
+      //     do_trigger_stuff();
+      //   });
+      // } else {
+        if (do_trigger_stuff()) {
           return;
         }
-      }
+      // }
     }
 
     console.log("CONCATENATED TEXT: " + concatenated_text);
@@ -53,7 +81,6 @@ exports.record_story = function(req, res) {
         var aggregate = res1.aggregate.score;
 
         console.log(aggregate);
-
 
         // log aggregate in database
         users.update_block(uid, aggregate, function(success1){
