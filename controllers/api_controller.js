@@ -1,5 +1,6 @@
 var users = require('../users');
 var hpapi = require('../hpapi');
+var triggers = require('../triggers');
 
 exports.record_story = function(req, res) {
 
@@ -27,13 +28,27 @@ exports.record_story = function(req, res) {
       concatenated_text += ". " + content[key];
     }
 
+    // Trigger stuff
+    if (req.body.triggers) {
+      var text_tokens = triggers.split_sanitize(concatenated_text);
+      var user_triggers = req.body.triggers.split(',');
+
+      for (var i=0; i<user_triggers.length; i++) {
+        var trigger = user_triggers[i];
+        if (triggers.weight_trigger(trigger, text_tokens) >= 0.4) { // TODO: look to see if this cutoff makes sense
+          res.write("SUPERNEGATIVEPLEASEHIDEDOITNOW");
+          return;
+        }
+      }
+    }
+
     console.log("CONCATENATED TEXT: " + concatenated_text);
 
     // query hp sentiment api
     hpapi.get_sentiment(concatenated_text, function(res1){
       if(res1 == false){
         return;
-      }else {
+      } else {
         var aggregate = res1.aggregate.score;
 
         console.log(aggregate);
