@@ -37,7 +37,7 @@ exports.record_story = function(req, res) {
       for (var i=0; i<user_triggers.length; i++) {
         var trigger = user_triggers[i];
         if (triggers.weight_trigger(trigger, text_tokens) >= 0.4) { // TODO: look to see if this cutoff makes sense
-          res.write("SUPERNEGATIVEPLEASEHIDEDOITNOW");
+          res.send({"remove": true, "prompt" : true});
           return;
         }
       }
