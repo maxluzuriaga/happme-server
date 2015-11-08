@@ -76,7 +76,7 @@ exports.get_weeks_score = function(uid, callback) {
 };
 
 // rounds down to 12 hour interval
-function _current_time_block() {
+exports._current_time_block = function () {
   var d = new Date();
   d.setMinutes(0);
   d.setSeconds(0);

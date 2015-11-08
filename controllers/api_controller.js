@@ -6,7 +6,7 @@ exports.record_story = function(req, res) {
   // UID
   // checked
   // contact
-  var uid = req.params.uid;
+  var uid = req.body.uid;
 
   users.get_or_create_user(uid, function(success){
     if(success == false){
@@ -16,25 +16,35 @@ exports.record_story = function(req, res) {
 
     // req params: post_id, user_id, contents, filtering
     var concatenated_text = "";
-    var content           = req.params.contents;
-    var filtering         = req.params.filtering;
+    var content           = req.body.contents;
+    var filtering         = req.body.filtering;
+
+    console.log(req.body);
 
     // concatenate all text in content
     for(var key in content){
-      if(content.hasOwnProperty(key)){
-        content += ". " + content[key];
-      }
+      console.log("found key " + key + " with val "+ content[key]);
+      concatenated_text += ". " + content[key];
     }
 
+    console.log("CONCATENATED TEXT: " + concatenated_text);
+
     // query hp sentiment api
-    hpapi.get_sentiment(text, function(res1){
+    hpapi.get_sentiment(concatenated_text, function(res1){
       if(res1 == false){
         return;
       }else {
         var aggregate = res1.aggregate.score;
 
+        console.log(aggregate);
+
+
         // log aggregate in database
-        users.update_block(uid, aggregate, function(sucess1){
+        users.update_block(uid, aggregate, function(success1){
+
+          console.log("GOT HERE: " + success1);
+
+
           if(success1 == false){
             return;
           }else{
@@ -49,7 +59,6 @@ exports.record_story = function(req, res) {
               res.send("negative");
               return;
             }
-
 
             // get weekly score
             users.get_weeks_score(uid, function(score){
