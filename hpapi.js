@@ -4,7 +4,6 @@ var http = require('http');
 
 module.exports = {
   get_sentiment: function (text, callback){
-
     var host        = 'http://api.havenondemand.com';
     var path        = '/1/api/sync/analyzesentiment/v1?';
     var query_text  = querystring.stringify({
@@ -17,6 +16,36 @@ module.exports = {
     console.log("QUERY_TEXT: " + query_text);
 
     http.get(host + path + query_text, function(res){
+      res.on('data', function(d){
+        body += d;
+      });
+
+      res.on('end', function(){
+        body = JSON.parse(body);
+        callback(body);
+        return;
+      })
+    }).on('error', function(e){
+      callback(false);
+      return;
+    });
+  },
+
+  get_entities: function(text, callback) {
+    var host        = 'http://api.havenondemand.com';
+    var path        = '/1/api/sync/extractentities/v1?';
+    var query_text  = querystring.stringify({
+      text: text.replace(" ", "+"),
+      language: "eng", 
+      apikey: "6a4d092a-3a56-46b9-9382-3d8b1637a5d8"});
+
+    var entity_types = '&entity_type=profanities&entity_type=drugs_eng'
+
+    var body = ''
+
+    console.log("QUERY_TEXT: " + query_text);
+
+    http.get(host + path + query_text + entity_types, function(res){
       res.on('data', function(d){
         body += d;
       });

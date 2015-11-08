@@ -114,10 +114,10 @@ exports.change_contact = function(req, res) {
   users.get_or_create_user(uid, function(worked) {
     if (worked) {
       users.update_contact(uid, contact_email, function(worked1) {
-        res.write(worked1);
+        res.send(worked1 ? 200 : 400)
       });
     } else {
-      res.write(false);
+      res.send(400);
     }
   });
 };
