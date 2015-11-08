@@ -14,7 +14,7 @@ exports.record_story = function(req, res) {
 
   users.get_or_create_user(uid, function(success){
     if(success == false){
-      res.send("error");
+      res.send("error" + uid);
       return;
     }
 
