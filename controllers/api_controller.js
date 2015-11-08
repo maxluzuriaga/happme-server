@@ -66,19 +66,15 @@ exports.record_story = function(req, res) {
                 return;
               }else{
 
-                // get last time prompted
-                users.get_last_prompt(uid, function(last_prompt){
-                  if(last_prompt != false){
-                    users.did_ask_long_enough_ago(uid, function(should_prompt){
-                      if(should_prompt == true){
-                        users.make_prompt_time_now(uid, function(arg){ return; });
-                        res.send("negative and prompt");
-                        return;
-                      }else if(should_prompt == false){
-                        res.send("negative");
-                        return;
-                      }
-                    });
+                // should we prompt?
+                users.did_ask_long_enough_ago(uid, function(skip_prompt){
+                  if(skip_prompt == false){
+                    users.make_prompt_time_now(uid, function(arg){ return; });
+                    res.send("negative and prompt");
+                    return;
+                  }else if(skip_prompt == true){
+                    res.send("negative");
+                    return;
                   }
                 })
               }
